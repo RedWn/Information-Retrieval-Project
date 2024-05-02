@@ -2,6 +2,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
+from nltk.corpus import wordnet
 
 import nltk.stem as ns
 
