@@ -12,11 +12,10 @@ def stem(words, mode):
     words is a regular string of words and mode is the type of stemmer to use
     the return is a list of stemmed words
     """
-    tokens = word_tokenize(words)
     stemmer = (
         ns.PorterStemmer()
     )  # TODO create a system for switching stemmers on the fly
-    stemmed_words = [stemmer.stem(token) for token in tokens]
+    stemmed_words = [stemmer.stem(word) for word in words]
 
     return stemmed_words
 
@@ -35,8 +34,7 @@ def get_wordnet_pos(tag_parameter):
 
 
 def lemmatize(words):
-    tokens = word_tokenize(words)
-    pos_tags = pos_tag(tokens)
+    pos_tags = pos_tag(words)
     lemmatizer = WordNetLemmatizer()
     lemmatized_words = [
         lemmatizer.lemmatize(word, pos=get_wordnet_pos(tag)) for word, tag in pos_tags
@@ -46,7 +44,6 @@ def lemmatize(words):
 
 def removeStopWords(words):
     filtered_text = []
-    # for word in word_tokenize(words):
     for word in words:
         if word not in stopwords.words("English"):
             filtered_text.append(word)
