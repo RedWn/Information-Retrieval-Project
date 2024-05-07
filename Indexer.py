@@ -34,17 +34,18 @@ def calculateIDF(corpus, inverted_index):
     return idf
 
 
-def calculateDocTF_IDF(corpus, doc):
+def calculateDocTF_IDF(corpus, all_tokens, doc):
     tf_idf = {}
     doc_tf = calculateTF(doc)
     inverted_index = getInvertedIndex(corpus)
     idf = calculateIDF(corpus, inverted_index)
     for term in doc:
-        if term not in idf.keys():
-            tf_idf[term] = doc_tf[term]
-        else:
+        if term in idf.keys():
             tf_idf[term] = doc_tf[term] * idf[term]
 
+    for token in all_tokens:
+        if token not in tf_idf.keys():
+            tf_idf[token] = 0
     df = pd.DataFrame(tf_idf, index=["tf_idf"])
     return tf_idf, df
 
@@ -60,10 +61,8 @@ def calculateManualTF_IDF(corpus):
     tfidf_matrix = []
 
     for key in corpus:
-        tfidf_matrix.append(calculateDocTF_IDF(corpus, corpus[key])[0])
-        for token in all_tokens:
-            if token not in tfidf_matrix[-1].keys():
-                tfidf_matrix[-1][token] = 0
+        tfidf_matrix.append(calculateDocTF_IDF(corpus, all_tokens, corpus[key])[0])
+
     df = pd.DataFrame(
         tfidf_matrix,
     )
