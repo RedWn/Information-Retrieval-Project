@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import pandas as pd
 import math
 from nltk.tokenize import word_tokenize
@@ -46,6 +47,7 @@ def calculateDocTF_IDF(corpus, all_tokens, doc):
     for token in all_tokens:
         if token not in tf_idf.keys():
             tf_idf[token] = 0
+    tf_idf = OrderedDict(sorted(tf_idf.items()))
     df = pd.DataFrame(tf_idf, index=["tf_idf"])
     return tf_idf, df
 
