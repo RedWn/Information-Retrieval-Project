@@ -3,7 +3,6 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 from nltk.corpus import wordnet
-
 import nltk.stem as ns
 
 
@@ -49,3 +48,10 @@ def removeStopWords(words):
             filtered_text.append(word)
 
     return filtered_text
+
+def get_alternative(word):
+    synsets = wordnet.synsets(word)
+    if synsets:
+        return synsets[0].lemma_names()[0]  # Choose the first synonym
+    else:
+        return word  # If no synonyms found, keep the original word
