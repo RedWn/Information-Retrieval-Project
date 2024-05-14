@@ -7,28 +7,26 @@ import nltk.stem as ns
 
 
 def stem(words, mode):
-    """
-    words is a regular string of words and mode is the type of stemmer to use
-    the return is a list of stemmed words
-    """
-    stemmer = (
-        ns.PorterStemmer()
-    )  # TODO create a system for switching stemmers on the fly
+    if mode == "Porter":
+        stemmer = ns.PorterStemmer()
+    elif mode == "Snowball":
+        stemmer = ns.SnowballStemmer(language="english")
+    elif mode== "Lancaster":
+        stemmer = ns.LancasterStemmer()
     stemmed_words = [stemmer.stem(word) for word in words]
-
     return stemmed_words
 
 
 def get_wordnet_pos(tag_parameter):
-
     tag = tag_parameter[0].upper()
     tag_dict = {
+        # redwan should we expand this list to take more options TODO
         "J": wordnet.ADJ,
         "N": wordnet.NOUN,
         "V": wordnet.VERB,
         "R": wordnet.ADV,
     }
-
+    # if the input tag is not recognized it defaults to treating it as a noun.
     return tag_dict.get(tag, wordnet.NOUN)
 
 
