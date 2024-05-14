@@ -17,3 +17,17 @@ def calcCosSimWithCorpus(tfidf_dataframe, vector):
     related_docs.sort(key=lambda x: x[1], reverse=True)
 
     return related_docs
+
+
+def getSimilarRows(corpus_df, query_df, threshold=0.25):
+    corpus_matrix = corpus_df.values
+    query_matrix = query_df.values
+
+    similarity_matrix = cosine_similarity(corpus_matrix, query_matrix)
+    similar_rows_indices = np.where(similarity_matrix > threshold)[0]
+
+    # Get the row names (index) from the DataFrame
+    similar_rows = {
+        corpus_df.index[i]: similarity_matrix[i].max() for i in similar_rows_indices
+    }
+    return similar_rows
