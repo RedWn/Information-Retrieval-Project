@@ -17,7 +17,7 @@ def calculateDocTF_IDF(query, vectorizer):
         tfidf_matrix.toarray(),
         columns=vectorizer.get_feature_names_out(),
     )
-    return tfidf_matrix, df
+    return df
 
 
 def calculateTF_IDF(corpus, vectorizer):
@@ -28,4 +28,4 @@ def calculateTF_IDF(corpus, vectorizer):
         columns=vectorizer.get_feature_names_out(),
         index=corpus.keys(),
     )
-    return tfidf_matrix, df
+    return df
