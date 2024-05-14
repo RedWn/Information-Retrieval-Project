@@ -7,11 +7,12 @@ import nltk.stem as ns
 
 
 def stem(words, mode):
+    stemmer = ns.PorterStemmer()
     if mode == "Porter":
         stemmer = ns.PorterStemmer()
     elif mode == "Snowball":
         stemmer = ns.SnowballStemmer(language="english")
-    elif mode== "Lancaster":
+    elif mode == "Lancaster":
         stemmer = ns.LancasterStemmer()
     stemmed_words = [stemmer.stem(word) for word in words]
     return stemmed_words
@@ -46,6 +47,7 @@ def removeStopWords(words):
             filtered_text.append(word)
 
     return filtered_text
+
 
 def get_alternative(word):
     synsets = wordnet.synsets(word)
