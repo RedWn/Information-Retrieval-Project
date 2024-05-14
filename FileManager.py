@@ -8,9 +8,9 @@ def openCSVRead(pathToFile):
     return csv.DictReader(csvfile, delimiter=",")
 
 
-def openCSVWriter(pathToFile, fieldnames):
+def openCSVWriter(pathToFile, fieldnames, delimiter=","):
     csvfile = open(pathToFile, "w", newline="")
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)
     writer.writeheader()
     return writer, csvfile
 
