@@ -3,10 +3,11 @@ import pandas as pd
 from nltk.tokenize import word_tokenize
 
 
-def open_csv_writer(path_to_file, fieldnames, delimiter=","):
+def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
     csvfile = open(path_to_file, "w", newline="")
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)
-    writer.writeheader()
+    if headers:
+        writer.writeheader()
     return writer, csvfile
 
 
@@ -28,7 +29,7 @@ def write_dataset_to_file(path, corpus):
 
 def write_runfile_to_file(path, queries, queries_answers):
     file_writer, file = open_csv_writer(
-        path, ["query_id", "iteration", "doc_id", "rank", "score", "tag"], "\t"
+        path, ["query_id", "iteration", "doc_id", "rank", "score", "tag"], "\t", False
     )
     for key in queries.keys():
         for rowKey in queries_answers[key].keys():
