@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 from nltk.tokenize import word_tokenize
 
 
@@ -47,3 +48,12 @@ def write_runfile_to_file(path, queries, queries_answers):
             )
     file.close()
     return
+
+
+def write_model_to_file(path, df: pd.DataFrame):
+    df.to_pickle(path)
+    return
+
+
+def load_model_from_file(path) -> pd.DataFrame:
+    return pd.read_pickle(path)
