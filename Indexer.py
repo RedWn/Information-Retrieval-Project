@@ -2,7 +2,7 @@ import pandas as pd
 from collections import defaultdict
 
 
-def getInvertedIndex(corpus):
+def get_inverted_index(corpus):
     inverted_index = defaultdict(list)
     for docId, doc in corpus.items():
         for term in doc:
@@ -11,7 +11,7 @@ def getInvertedIndex(corpus):
     return dict(inverted_index)
 
 
-def calculateDocTF_IDF(query, vectorizer):
+def calculate_doc_tf_idf(query, vectorizer):
     tfidf_matrix = vectorizer.transform(query)
     df = pd.DataFrame(
         tfidf_matrix.toarray(),
@@ -20,7 +20,7 @@ def calculateDocTF_IDF(query, vectorizer):
     return df
 
 
-def calculateTF_IDF(corpus, vectorizer):
+def calculate_tf_idf(corpus, vectorizer):
     string_corpus = [str(element) for element in corpus.values()]
     tfidf_matrix = vectorizer.fit_transform(string_corpus)
     df = pd.DataFrame(
