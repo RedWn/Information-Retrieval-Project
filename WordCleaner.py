@@ -1,4 +1,3 @@
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
@@ -40,7 +39,7 @@ def lemmatize(words):
     return lemmatized_words
 
 
-def removeStopWords(words):
+def remove_stop_words(words):
     filtered_text = []
     for word in words:
         if word not in stopwords.words("English"):

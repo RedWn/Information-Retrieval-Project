@@ -2,20 +2,14 @@ import csv
 from nltk.tokenize import word_tokenize
 
 
-# class FileWriter:
-def openCSVRead(pathToFile):
-    csvfile = open(pathToFile)
-    return csv.DictReader(csvfile, delimiter=",")
-
-
-def openCSVWriter(pathToFile, fieldnames, delimiter=","):
-    csvfile = open(pathToFile, "w", newline="")
+def open_csv_writer(path_to_file, fieldnames, delimiter=","):
+    csvfile = open(path_to_file, "w", newline="")
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=delimiter)
     writer.writeheader()
     return writer, csvfile
 
 
-def csvToDict(filename):
+def csv_to_dict(filename):
     with open(filename, mode="r") as infile:
         reader = csv.reader(infile)
         next(reader, None)  # skip the headers

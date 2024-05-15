@@ -2,7 +2,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 
-def calcCosSimWithCorpus(tfidf_dataframe, vector):
+def calculate_cos_similarity(tfidf_dataframe, vector):
     # Convert vector A to a numpy array
     A_array = np.array(vector)
     related_docs = []
@@ -19,7 +19,7 @@ def calcCosSimWithCorpus(tfidf_dataframe, vector):
     return related_docs
 
 
-def getSimilarRows(corpus_df, query_df, threshold=0.25):
+def get_query_answers(corpus_df, query_df, threshold=0.25):
     corpus_matrix = corpus_df.values
     query_matrix = query_df.values
 
