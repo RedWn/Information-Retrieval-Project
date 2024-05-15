@@ -4,7 +4,6 @@ from nltk import pos_tag
 from nltk.corpus import wordnet
 import nltk.stem as ns
 
-
 def stem(words, mode):
     stemmer = ns.PorterStemmer()
     if mode == "Porter":
@@ -49,8 +48,45 @@ def remove_stop_words(words):
 
 
 def get_alternative(word):
-    synsets = wordnet.synsets(word)
+    treebank_pos = pos_tag([word])[0][1]   # Get the POS tag
+    synsets = wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos))
+    # synsets = wordnet.synsets(word)
     if synsets:
-        return synsets[0].lemma_names()[0]  # Choose the first synonym
+        return synsets[0].lemma_names()[0].lower()  # Choose the first synonym
     else:
         return word  # If no synonyms found, keep the original word
+
+
+def get_alternative_hypernym(word):
+    synsets = wordnet.synsets(word)
+    if synsets:
+        # Get the first synset (sense)
+        first_synset = synsets[0]
+        # Get the hypernyms for the first synset
+        hypernyms = first_synset.hypernyms()
+        if hypernyms:
+            # Choose the first hypernym
+            return hypernyms[0].lemma_names()[0]
+        else:
+            # If no hypernyms found, return the original word
+            return word
+    else:
+        # If no synsets found, keep the original word
+        return word
+    
+
+def get_unified_synonym(word):
+    synonyms = set()
+    treebank_pos = pos_tag([word])[0][1]   # Get the POS tag
+    for synset in wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos)):
+        synonyms.update(lemma.name() for lemma in synset.lemmas())
+
+    # Choose a unified form (e.g., the most common synonym)
+    if synonyms:
+        word_counts = {syn: sum(syn in synset.lemma_names() for synset in wordnet.synsets(word)) for syn in synonyms}
+        unified_synonym = max(word_counts, key=word_counts.get)
+    else:
+        unified_synonym = word  # If no synonyms found, keep the original word
+
+    return unified_synonym.lower()
+
