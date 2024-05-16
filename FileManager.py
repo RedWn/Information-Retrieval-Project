@@ -53,7 +53,7 @@ def write_runfile_to_file(path, queries, queries_answers):
 
 
 def write_model_to_file(path, matrix: sparse):
-    matrix.save_npz(path, matrix)
+    sparse.save_npz(path, matrix)
     return
 
 

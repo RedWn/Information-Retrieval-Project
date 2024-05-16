@@ -3,15 +3,6 @@ from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-def get_inverted_index(corpus):
-    inverted_index = defaultdict(list)
-    for docId, doc in corpus.items():
-        for term in doc:
-            if len(term) > 1:
-                inverted_index[term].append(docId)
-    return dict(inverted_index)
-
-
 def calculate_doc_tf_idf(query, vectorizer: TfidfVectorizer):
     tfidf_matrix = vectorizer.transform(query)
     return tfidf_matrix
