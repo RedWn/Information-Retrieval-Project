@@ -1,6 +1,7 @@
 import csv
 import pandas as pd
 from nltk.tokenize import word_tokenize
+from scipy import sparse
 
 
 def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
@@ -51,10 +52,10 @@ def write_runfile_to_file(path, queries, queries_answers):
     return
 
 
-def write_model_to_file(path, df: pd.DataFrame):
-    df.to_pickle(path)
+def write_model_to_file(path, matrix: sparse):
+    matrix.save_npz(path, matrix)
     return
 
 
-def load_model_from_file(path) -> pd.DataFrame:
-    return pd.read_pickle(path)
+def load_model_from_file(path) -> sparse:
+    return sparse.load_npz(path)
