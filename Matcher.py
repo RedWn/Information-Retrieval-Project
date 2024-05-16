@@ -19,15 +19,10 @@ def calculate_cos_similarity(tfidf_dataframe, vector):
     return related_docs
 
 
-def get_query_answers(corpus_df, query_df, threshold=0.25):
-    corpus_matrix = corpus_df.values
-    query_matrix = query_df.values
-
+def get_query_answers(corpus_matrix, query_matrix, keys, threshold=0.25):
     similarity_matrix = cosine_similarity(corpus_matrix, query_matrix)
     similar_rows_indices = np.where(similarity_matrix > threshold)[0]
 
     # Get the row names (index) from the DataFrame
-    similar_rows = {
-        corpus_df.index[i]: similarity_matrix[i].max() for i in similar_rows_indices
-    }
+    similar_rows = {keys[i]: similarity_matrix[i].max() for i in similar_rows_indices}
     return similar_rows
