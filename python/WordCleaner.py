@@ -96,15 +96,8 @@ def get_unified_synonym(word):
 
 
 def synonym_map_corpus(corpus):
-    synonym_dict = {}
-    for key, words in corpus.items():
-        for word in words:
-            synonym_dict[word] = get_unified_synonym(word)
-    print(synonym_dict)
-    # TODO save the dictionary locally because it is needed in query mapping, OR check if this may not be needed
-
-    # Update the dataset with alternative words
+    # Update the dataset with synonyms words
     mapped_dataset = {}
     for key, words in corpus.items():
-        mapped_dataset[key] = [synonym_dict[word] for word in words]
+        mapped_dataset[key] = [get_unified_synonym(word) for word in words]
     return mapped_dataset
