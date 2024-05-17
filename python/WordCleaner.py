@@ -3,6 +3,8 @@ from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 from nltk.corpus import wordnet
 import nltk.stem as ns
+from word2number import w2n
+from functools import lru_cache
 
 
 def stem(words, mode):
@@ -76,28 +78,34 @@ def get_alternative_hypernym(word):
         return word
 
 
-def get_unified_synonym(word):
-    synonyms = set()
-    treebank_pos = pos_tag([word])[0][1]  # Get the POS tag
-    for synset in wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos)):
-        synonyms.update(lemma.name() for lemma in synset.lemmas())
-
-    # Choose a unified form (e.g., the most common synonym)
-    if synonyms:
-        word_counts = {
-            syn: sum(syn in synset.lemma_names() for synset in wordnet.synsets(word))
-            for syn in synonyms
-        }
-        unified_synonym = max(word_counts, key=word_counts.get)
-    else:
-        unified_synonym = word  # If no synonyms found, keep the original word
-
-    return unified_synonym.lower()
-
-
 def synonym_map_corpus(corpus):
     # Update the dataset with synonyms words
     mapped_dataset = {}
     for key, words in corpus.items():
         mapped_dataset[key] = [get_unified_synonym(word) for word in words]
     return mapped_dataset
+
+
+# Cache the synsets to avoid redundant processing
+@lru_cache(maxsize=None)
+def get_synsets(word):
+    return wordnet.synsets(word)
+
+def get_unified_synonym(word):
+    # If the word is a digit, return it as is
+    if word.isdigit():
+        return str(word)
+
+    # If the word is a numeric word, return it as a number
+    try:
+        return str(w2n.word_to_num(word))
+    except ValueError:
+        # Get the synsets once and reuse
+        synsets = get_synsets(word)
+        if synsets:
+            # Directly access lemma names and count occurrences
+            lemma_names = [lemma.name() for synset in synsets for lemma in synset.lemmas()]
+            # Get the most common synonym for the word
+            unified_synonym = max(set(lemma_names), key=lemma_names.count)
+            return unified_synonym.lower()
+    return word.lower()
