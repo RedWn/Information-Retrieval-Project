@@ -4,6 +4,7 @@ from nltk import pos_tag
 from nltk.corpus import wordnet
 import nltk.stem as ns
 
+
 def stem(words, mode):
     stemmer = ns.PorterStemmer()
     if mode == "Porter":
@@ -48,7 +49,7 @@ def remove_stop_words(words):
 
 
 def get_alternative(word):
-    treebank_pos = pos_tag([word])[0][1]   # Get the POS tag
+    treebank_pos = pos_tag([word])[0][1]  # Get the POS tag
     synsets = wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos))
     # synsets = wordnet.synsets(word)
     if synsets:
@@ -73,20 +74,37 @@ def get_alternative_hypernym(word):
     else:
         # If no synsets found, keep the original word
         return word
-    
+
 
 def get_unified_synonym(word):
     synonyms = set()
-    treebank_pos = pos_tag([word])[0][1]   # Get the POS tag
+    treebank_pos = pos_tag([word])[0][1]  # Get the POS tag
     for synset in wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos)):
         synonyms.update(lemma.name() for lemma in synset.lemmas())
 
     # Choose a unified form (e.g., the most common synonym)
     if synonyms:
-        word_counts = {syn: sum(syn in synset.lemma_names() for synset in wordnet.synsets(word)) for syn in synonyms}
+        word_counts = {
+            syn: sum(syn in synset.lemma_names() for synset in wordnet.synsets(word))
+            for syn in synonyms
+        }
         unified_synonym = max(word_counts, key=word_counts.get)
     else:
         unified_synonym = word  # If no synonyms found, keep the original word
 
     return unified_synonym.lower()
 
+
+def synonym_map_corpus(corpus):
+    synonym_dict = {}
+    for key, words in corpus.items():
+        for word in words:
+            synonym_dict[word] = get_unified_synonym(word)
+    print(synonym_dict)
+    # TODO save the dictionary locally because it is needed in query mapping, OR check if this may not be needed
+
+    # Update the dataset with alternative words
+    mapped_dataset = {}
+    for key, words in corpus.items():
+        mapped_dataset[key] = [synonym_dict[word] for word in words]
+    return mapped_dataset

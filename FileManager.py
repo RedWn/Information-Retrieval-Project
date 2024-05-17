@@ -34,18 +34,14 @@ def write_runfile_to_file(path, queries, queries_answers):
     )
     for key in queries.keys():
         for rowKey in queries_answers[key].keys():
-            if queries_answers[key][rowKey] > 0.9:
-                value = 2
-            else:
-                value = 1
             file_writer.writerow(
                 {
                     "query_id": key,
                     "iteration": "Q0",
                     "doc_id": rowKey,
-                    "rank": value,
-                    "score": value,
-                    "tag": value,
+                    "rank": queries_answers[key][rowKey],
+                    "score": queries_answers[key][rowKey],
+                    "tag": queries_answers[key][rowKey],
                 }
             )
     file.close()
