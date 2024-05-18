@@ -7,27 +7,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Distribution / packaging
-build/
-dist/
-eggs/
-.eggs/
-*.egg-info/
-*.egg
-.prerelease-version
-
-# Unit test / coverage reports
-.coverage
-.coverage\.*
-.pytest_cache/
-.mypy_cache/
-test-reports
-htmlcov
-.hypothesis
-
-# Test fixtures
-cffi_bin
-
 # Pyenv Stuff
 .python-version
 venv
@@ -37,18 +16,6 @@ lib/streamlit/proto/*_pb2.py
 lib/streamlit/proto/*_pb2.pyi
 frontend/lib/src/proto.js
 frontend/lib/src/proto.d.ts
-
-########################################################################
-# OSX - https://github.com/github/gitignore/blob/master/Global/macOS.gitignore
-########################################################################
-.DS_Store
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
 
 
 # Logs
@@ -61,9 +28,6 @@ node_modules/
 
 # ESLint
 .eslintcache
-
-# Coverage directory used by tools like istanbul
-coverage/
 
 ########################################################################
 # Streamlit
@@ -78,27 +42,7 @@ streamlit-storage
 lib/Pipfile.lock
 
 
-########################################################################
-# Playwright
-########################################################################
-# Playwright test
-playwright-report
-e2e_playwright/test-results
-# Only keep the snapshots in the linux folder
-e2e_playwright/__snapshots__/*
-!e2e_playwright/__snapshots__/linux
-
-########################################################################
-# Cypress
-########################################################################
-frontend/cypress/downloads
-frontend/cypress/videos
-frontend/cypress/screenshots
-__diff_output__
-cypress.env.json
-frontend/test_results
-
-# Ignore screenshots that don't get used in CircleCI
+nore screenshots that don't get used in CircleCI
 frontend/cypress/snapshots/darwin
 frontend/cypress/snapshots/linux/1x
 
