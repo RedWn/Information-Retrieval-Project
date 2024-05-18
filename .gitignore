@@ -1,6 +1,8 @@
 __pycache__/
 *.csv
-8.tsv
+*.tsv
+*.npz
+*.jsonl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
