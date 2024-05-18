@@ -49,8 +49,8 @@ def write_runfile_to_file(path, queries, queries_answers):
                     "query_id": key,
                     "iteration": "Q0",
                     "doc_id": rowKey,
-                    "rank": queries_answers[key][rowKey],
-                    "score": 1,
+                    "rank": 1,  # queries_answers[key][rowKey],
+                    "score": queries_answers[key][rowKey],
                     "tag": 1,
                 }
             )
@@ -58,16 +58,18 @@ def write_runfile_to_file(path, queries, queries_answers):
     return
 
 
-def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys):
+def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys, matrix):
     pickle_model(name, vectorizer)
     store_keys(name, keys)
+    store_matrix(name, matrix)
     return
 
 
 def load_model_from_drive(name) -> sparse:
     vectorizer = unpickle_model(name)
     keys = load_keys(name)
-    return vectorizer, keys
+    matrix = load_matrix(name)
+    return vectorizer, keys, matrix
 
 
 def pickle_model(name: str, vectorizer: TfidfVectorizer):
@@ -95,6 +97,17 @@ def load_keys(name: str) -> list[str]:
     with open(path, "r") as file:
         keys = [line.strip() for line in file]
     return keys
+
+
+def store_matrix(name: str, matrix: sparse):
+    path = name + ".matrix"
+    sparse.save_npz(path, matrix)
+    return
+
+
+def load_matrix(name: str):
+    path = name + ".matrix.npz"
+    return sparse.load_npz(path)
 
 
 def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
