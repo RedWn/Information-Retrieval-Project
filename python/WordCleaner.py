@@ -5,6 +5,7 @@ from nltk.corpus import wordnet
 import nltk.stem as ns
 from word2number import w2n
 from functools import lru_cache
+import string
 
 
 def stem(words, mode):
@@ -50,6 +51,14 @@ def remove_stop_words(words):
     return filtered_text
 
 
+def process_capital_punctuation(words):
+    new_tokens = []
+    for word in words:
+        word = word.lower()
+        new_tokens.append(word.translate(str.maketrans("", "", string.punctuation)))
+    return new_tokens
+
+
 def get_alternative(word):
     treebank_pos = pos_tag([word])[0][1]  # Get the POS tag
     synsets = wordnet.synsets(word, pos=get_wordnet_pos(treebank_pos))
@@ -91,6 +100,7 @@ def synonym_map_corpus(corpus):
 def get_synsets(word):
     return wordnet.synsets(word)
 
+
 def get_unified_synonym(word):
     # If the word is a digit, return it as is
     if word.isdigit():
@@ -104,7 +114,9 @@ def get_unified_synonym(word):
         synsets = get_synsets(word)
         if synsets:
             # Directly access lemma names and count occurrences
-            lemma_names = [lemma.name() for synset in synsets for lemma in synset.lemmas()]
+            lemma_names = [
+                lemma.name() for synset in synsets for lemma in synset.lemmas()
+            ]
             # Get the most common synonym for the word
             unified_synonym = max(set(lemma_names), key=lemma_names.count)
             return unified_synonym.lower()
