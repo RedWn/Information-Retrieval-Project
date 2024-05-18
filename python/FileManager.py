@@ -20,6 +20,14 @@ def csv_to_dict(filename):
     return dict_from_csv
 
 
+def tsv_to_dict(filename):
+    with open(filename, mode="r") as infile:
+        reader = csv.reader(infile, delimiter="\t")
+        next(reader, None)  # skip the headers
+        dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in reader}
+    return dict_from_csv
+
+
 def write_dataset_to_file(path, corpus):
     file_writer, file = open_csv_writer(path, ["id", "text"])
     for key in corpus:
