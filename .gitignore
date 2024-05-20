@@ -1,3 +1,9 @@
+*.model
+*.npy
+*.keys
+*.pickle
+
+
 __pycache__/
 *.csv
 *.tsv

@@ -119,5 +119,8 @@ def get_unified_synonym(word):
             ]
             # Get the most common synonym for the word
             unified_synonym = max(set(lemma_names), key=lemma_names.count)
-            return unified_synonym.lower()
+            try:
+                return str(w2n.word_to_num(unified_synonym))
+            except ValueError:
+                return unified_synonym.lower()
     return word.lower()
