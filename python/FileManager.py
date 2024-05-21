@@ -51,7 +51,7 @@ def write_runfile_to_file(path, queries, queries_answers):
                     "iteration": "Q0",
                     "doc_id": rowKey,
                     "rank": 1,  # queries_answers[key][rowKey],
-                    "score": queries_answers[key][rowKey],
+                    "score": 1,  # queries_answers[key][rowKey],
                     "tag": 1,
                 }
             )
