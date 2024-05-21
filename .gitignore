@@ -9,6 +9,7 @@ __pycache__/
 *.tsv
 *.npz
 *.jsonl
+*.run
 wikir/
 lotte/
 
