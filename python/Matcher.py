@@ -60,7 +60,8 @@ def get_query_answers_optimized(corpus_matrix, query_matrix, keys, threshold=0.2
     similar_rows = ((keys[i], max_values[i]) for i in similar_rows_indices)
     similar_rows = dict(similar_rows)
     similar_rows = {
-        k: v for k, v in sorted(similar_rows.items(), key=lambda item: item[1])[:10]
+        k: v
+        for k, v in sorted(similar_rows.items(), key=lambda item: item[1], reverse=True)
     }
     return similar_rows
 
