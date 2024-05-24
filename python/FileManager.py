@@ -44,14 +44,14 @@ def write_runfile_to_file(path, queries, queries_answers):
         path, ["query_id", "iteration", "doc_id", "rank", "score", "tag"], "\t", False
     )
     for key in queries.keys():
-        for rowKey in queries_answers[key].keys():
+        for i,rowKey in enumerate(queries_answers[key].keys()):
             file_writer.writerow(
                 {
                     "query_id": key,
                     "iteration": "Q0",
                     "doc_id": rowKey,
                     "rank": 1,  # queries_answers[key][rowKey],
-                    "score": 1,  # queries_answers[key][rowKey],
+                    "score":  2 * queries_answers[key][rowKey],
                     "tag": 1,
                 }
             )
