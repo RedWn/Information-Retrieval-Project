@@ -86,3 +86,20 @@ def get_query_answers_optimized_2(corpus_matrix, query_matrix, keys, threshold=0
         k: v for k, v in sorted(similar_rows.items(), key=lambda item: item[1])[:10]
     }
     return similar_rows
+
+
+def get_query_answers_optimized_bert(corpus_matrix, query_matrix, keys, threshold=0.25):
+    similarity_matrix = cosine_similarity(corpus_matrix, query_matrix)
+    similar_rows_indices = np.where(similarity_matrix > threshold)[0]
+
+    # Precompute max values for each row
+    max_values = similarity_matrix.max(axis=1)
+
+    # Use a generator expression instead of a dictionary comprehension
+    similar_rows = ((keys[i], max_values[i]) for i in similar_rows_indices)
+    similar_rows = dict(similar_rows)
+    similar_rows = {
+        k: v
+        for k, v in sorted(similar_rows.items(), key=lambda item: item[1], reverse=True)
+    }
+    return similar_rows
