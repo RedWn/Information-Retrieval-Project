@@ -6,6 +6,8 @@ import nltk.stem as ns
 from word2number import w2n
 from functools import lru_cache
 import string
+import country_converter as coco
+import roman
 import re
 import spacy
 from number_parser import parse_ordinal
@@ -150,3 +152,49 @@ def ordinal_word_to_ordinal_number(word):
     suffix = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][(number % 10 if number % 100 not in [11, 12, 13] else 0)]
     return str(number) + suffix
     
+# def is_country_name(name):
+#     # with open(os.devnull, 'w') as devnull:
+#     #     with contextlib.redirect_stderr(devnull):
+#             # Try to convert the name to ISO 3166-1 alpha-3 country codes
+#     code = coco.convert(names=[name], to='ISO3')
+#     # If the conversion result is 'not found', the name is not a country name
+#     return code != 'not found'
+    
+def standardize_country_names_OLD(name):
+    converted = coco.convert(names=[name], to='name_short')
+    if converted != 'not found':
+        return converted
+    else:
+        return name()
+    
+
+def standardize_country_names(name):
+    # If the name is in the dictionary, return the standardized form
+    if name in country_dict:
+        return country_dict[name]
+    return name
+
+
+# def is_roman_numeral(s):
+#     # This pattern matches Roman numerals from 1 to 3999
+#     pattern = 'M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})'
+#     return bool(re.fullmatch(pattern, s, re.IGNORECASE))
+
+country_dict = {
+    'usa': 'united states',
+    # 'us': 'united states',
+    'u.s.': 'united states',
+    'u.s.a.': 'united states',
+    'america': 'united states',
+    'uk': 'united kingdom',
+    'u.k.': 'united kingdom',
+    'britain': 'united kingdom',
+    'england': 'united kingdom',
+    # 'scotland': 'united kingdom',
+    # 'wales': 'united kingdom',
+    'prc': "china",
+    'uae': 'united arab emirates',
+    'u.a.e.': 'united arab emirates',
+    'emirates': 'united arab emirates',
+    # Add more mappings as needed...
+}
