@@ -136,3 +136,17 @@ def is_roman_numeral(s):
     return bool(re.fullmatch(pattern, s, re.IGNORECASE))
 
 
+ordinal_words = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'thirtieth', 'fortieth', 'fiftieth', 'sixtieth', 'seventieth', 'eightieth', 'ninetieth', 'hundredth', 'thousandth']
+def is_ordinal(word):
+    # Check if the word ends with an ordinal suffix
+    if re.fullmatch(r'.*(st|nd|rd|th)$', word, re.IGNORECASE):
+        # If it does, check if it's an ordinal word
+        if(word in ordinal_words):
+            return True
+    return False
+
+def ordinal_word_to_ordinal_number(word):
+    number = parse_ordinal(word)
+    suffix = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][(number % 10 if number % 100 not in [11, 12, 13] else 0)]
+    return str(number) + suffix
+    
