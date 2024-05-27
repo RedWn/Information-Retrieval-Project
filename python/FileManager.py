@@ -6,7 +6,6 @@ from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
 
 
 def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
@@ -17,17 +16,9 @@ def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
     return writer, csvfile
 
 
-def csv_to_dict(filename):
+def csv_to_dict(filename, delimiter=","):
     with open(filename, mode="r") as infile:
-        reader = csv.reader(infile)
-        next(reader, None)  # skip the headers
-        dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in reader}
-    return dict_from_csv
-
-
-def tsv_to_dict(filename):
-    with open(filename, mode="r") as infile:
-        reader = csv.reader(infile, delimiter="\t")
+        reader = csv.reader(infile, delimiter=delimiter)
         next(reader, None)  # skip the headers
         dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in reader}
     return dict_from_csv
@@ -41,7 +32,7 @@ def write_dataset_to_file(path, corpus):
     return
 
 
-def write_runfile_to_file(path, queries, queries_answers):
+def write_runfile_to_file(path, queries, queries_answers, max_relevance=2):
     file_writer, file = open_csv_writer(
         path, ["query_id", "iteration", "doc_id", "rank", "score", "tag"], "\t", False
     )
@@ -52,8 +43,8 @@ def write_runfile_to_file(path, queries, queries_answers):
                     "query_id": key,
                     "iteration": "Q0",
                     "doc_id": rowKey,
-                    "rank": 1,  # queries_answers[key][rowKey],
-                    "score": 2 * queries_answers[key][rowKey],
+                    "rank": 1,
+                    "score": max_relevance * queries_answers[key][rowKey],
                     "tag": 1,
                 }
             )
