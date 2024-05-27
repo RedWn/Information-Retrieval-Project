@@ -1,6 +1,17 @@
+*.model
+*.npy
+*.keys
+*.pickle
+
+
 __pycache__/
 *.csv
-8.tsv
+*.tsv
+*.npz
+*.jsonl
+*.run
+wikir/
+lotte/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
