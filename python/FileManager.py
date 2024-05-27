@@ -1,6 +1,8 @@
 import csv
 import pickle
 import json
+import pandas as pd
+from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -43,15 +45,15 @@ def write_runfile_to_file(path, queries, queries_answers):
     file_writer, file = open_csv_writer(
         path, ["query_id", "iteration", "doc_id", "rank", "score", "tag"], "\t", False
     )
-    for key in queries.keys():
-        for i,rowKey in enumerate(queries_answers[key].keys()):
+    for key in tqdm(queries.keys()):
+        for rowKey in queries_answers[key].keys():
             file_writer.writerow(
                 {
                     "query_id": key,
                     "iteration": "Q0",
                     "doc_id": rowKey,
                     "rank": 1,  # queries_answers[key][rowKey],
-                    "score":  2 * queries_answers[key][rowKey],
+                    "score": 2 * queries_answers[key][rowKey],
                     "tag": 1,
                 }
             )
@@ -136,7 +138,7 @@ def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
 
             for line in jsonl_file:
                 data = json.loads(line)
-                qid = data.get("qid", "")
+                qid = "S" + str(data.get("qid", ""))
                 score = 1  # data.get("score", "1")
                 answer_pids = data.get("answer_pids", [])
 
