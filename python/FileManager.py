@@ -61,11 +61,8 @@ def write_runfile_to_file(path, queries, queries_answers):
     return
 
 
-def write_model_to_drive(
-    name, vectorizer: TfidfVectorizer, svd: TruncatedSVD, keys, matrix
-):
+def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys, matrix):
     pickle_model(name, vectorizer)
-    pickle_svd(name, svd)
     store_keys(name, keys)
     store_matrix(name, matrix)
     return
@@ -73,10 +70,9 @@ def write_model_to_drive(
 
 def load_model_from_drive(name) -> sparse:
     vectorizer = unpickle_model(name)
-    svd = unpickle_svd(name)
     keys = load_keys(name)
     matrix = load_matrix(name)
-    return vectorizer, svd, keys, matrix
+    return vectorizer, keys, matrix
 
 
 def pickle_model(name: str, vectorizer: TfidfVectorizer):
@@ -89,18 +85,6 @@ def unpickle_model(name: str) -> TfidfVectorizer:
     path = name + ".pickle"
     vectorizer = pickle.load(open(path, "rb"))
     return vectorizer
-
-
-def pickle_svd(name: str, svd: TruncatedSVD):
-    path = name + "_svd.pickle"
-    pickle.dump(svd, open(path, "wb"))
-    return path
-
-
-def unpickle_svd(name: str) -> TruncatedSVD:
-    path = name + "_svd.pickle"
-    svd = pickle.load(open(path, "rb"))
-    return svd
 
 
 def store_keys(name: str, keys: list[str]) -> None:
