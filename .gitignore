@@ -58,8 +58,3 @@ frontend/cypress/snapshots/darwin
 frontend/cypress/snapshots/linux/1x
 
 .vscode/
-Wikir_2/wikir.keys
-Wikir_3/wikir_svd.pickle
-Wikir_3/wikir.keys
-Wikir_3/wikir.matrix.npz
-Wikir_3/wikir.pickle
