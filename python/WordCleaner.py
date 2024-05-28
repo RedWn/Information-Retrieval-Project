@@ -66,37 +66,6 @@ def process_capital_punctuation(words):
     return new_tokens
 
 
-# # Cache the synsets to avoid redundant processing
-# @lru_cache(maxsize=None)
-# def get_synsets(word):
-#     return wordnet.synsets(word)
-
-
-# def get_unified_synonym(word):
-#     # If the word is a digit, return it as is
-#     if word.isdigit():
-#         return str(word)
-
-#     # If the word is a numeric word, return it as a number
-#     try:
-#         return str(w2n.word_to_num(word))
-#     except ValueError:
-#         # Get the synsets once and reuse
-#         synsets = get_synsets(word)
-#         if synsets:
-#             # Directly access lemma names and count occurrences
-#             lemma_names = [
-#                 lemma.name() for synset in synsets for lemma in synset.lemmas()
-#             ]
-#             # Get the most common synonym for the word
-#             unified_synonym = max(set(lemma_names), key=lemma_names.count)
-#             try:
-#                 return str(w2n.word_to_num(unified_synonym))
-#             except ValueError:
-#                 return unified_synonym.lower()
-#     return word.lower()
-
-
 # Create a dictionary to store precomputed results
 memo = {}
 def get_unified_synonym_2(word):
@@ -130,8 +99,6 @@ def get_unified_synonym_2(word):
 
 
 
-
-
 # This pattern matches Roman numerals from 1 to 49
 pattern = '(I|II|III|IV|V|VI|VII|VIII|IX|X|XX|XXX|XL|L)?'
 def is_roman_numeral(s):
@@ -147,26 +114,12 @@ def is_ordinal(word):
             return True
     return False
 
+
 def ordinal_word_to_ordinal_number(word):
     number = parse_ordinal(word)
     suffix = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][(number % 10 if number % 100 not in [11, 12, 13] else 0)]
     return str(number) + suffix
-    
-# def is_country_name(name):
-#     # with open(os.devnull, 'w') as devnull:
-#     #     with contextlib.redirect_stderr(devnull):
-#             # Try to convert the name to ISO 3166-1 alpha-3 country codes
-#     code = coco.convert(names=[name], to='ISO3')
-#     # If the conversion result is 'not found', the name is not a country name
-#     return code != 'not found'
-    
-def standardize_country_names_OLD(name):
-    converted = coco.convert(names=[name], to='name_short')
-    if converted != 'not found':
-        return converted
-    else:
-        return name()
-    
+ 
 
 def standardize_country_names(name):
     # If the name is in the dictionary, return the standardized form
@@ -174,11 +127,6 @@ def standardize_country_names(name):
         return country_dict[name]
     return name
 
-
-# def is_roman_numeral(s):
-#     # This pattern matches Roman numerals from 1 to 3999
-#     pattern = 'M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})'
-#     return bool(re.fullmatch(pattern, s, re.IGNORECASE))
 
 country_dict = {
     'usa': 'united states',
@@ -190,8 +138,6 @@ country_dict = {
     'u.k.': 'united kingdom',
     'britain': 'united kingdom',
     'england': 'united kingdom',
-    # 'scotland': 'united kingdom',
-    # 'wales': 'united kingdom',
     'prc': "china",
     'uae': 'united arab emirates',
     'u.a.e.': 'united arab emirates',
