@@ -57,6 +57,14 @@ def remove_stop_words(words):
 
     return filtered_text
 
+def remove_single_letters(words):
+    processed_words = []
+    for word in words:
+        # If the word is not a single letter, add it to the processed_words list
+        if len(word) > 1 or word.isdigit():
+            processed_words.append(word)
+    return processed_words
+
 
 def process_capital_punctuation(words):
     new_tokens = []
