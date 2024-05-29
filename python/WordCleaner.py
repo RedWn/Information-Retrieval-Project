@@ -4,17 +4,11 @@ from nltk import pos_tag
 from nltk.corpus import wordnet
 import nltk.stem as ns
 from word2number import w2n
-from functools import lru_cache
 import string
-import country_converter as coco
 import roman
 import re
-import spacy
 from number_parser import parse_ordinal
 
-
-# Load the spaCy model
-nlp = spacy.load('en_core_web_sm')
 
 def stem(words, mode):
     stemmer = ns.PorterStemmer()
@@ -81,11 +75,10 @@ def get_unified_synonym_2(word):
     if word in memo:
         return memo[word]
 
-    # Otherwise, compute the result as before
     if word.isdigit():
         result = str(word)
     
-    # Convert Roman numeral to integer
+    # Convert Roman numeral to integers
     elif is_roman_numeral(word):
         result = str(roman.fromRoman(word.upper()))
     
@@ -204,7 +197,6 @@ country_dict = {
     'joburg': 'johannesburg',
     'capetown': 'cape town',
     'philly': 'philadelphia',
-    'u.a.e': 'united arab emirates',
     'k.s.a': 'saudi arabia',
     'p.r.c': 'china',
     'siam': 'thailand',
