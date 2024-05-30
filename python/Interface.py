@@ -4,6 +4,7 @@ import Indexer
 import Matcher
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.tokenize import word_tokenize
+import couchdb
 
 
 def search(dataset_name: str, query: str):
@@ -16,3 +17,8 @@ def search(dataset_name: str, query: str):
     matrix = Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer)
     similar_rows = Matcher.get_query_answers(tfidf_matrix, matrix, dataset_keys, 0.35)
     return similar_rows
+
+
+def load_dataset(dataset_name: str):
+
+    return FileManager.csv_to_dict("..\wikir\csv\wikir.csv")
