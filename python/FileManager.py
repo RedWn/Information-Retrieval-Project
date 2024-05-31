@@ -20,7 +20,7 @@ def csv_to_dict(filename, delimiter=","):
     with open(filename, mode="r") as infile:
         reader = csv.reader(infile, delimiter=delimiter)
         next(reader, None)  # skip the headers
-        dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in reader}
+        dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in tqdm(reader)}
     return dict_from_csv
 
 
