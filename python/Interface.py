@@ -4,21 +4,36 @@ import Indexer
 import Matcher
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.tokenize import word_tokenize
-import couchdb
+import mysql.connector
+from gensim import corpora, models
 
 
-def search(dataset_name: str, query: str):
-    query = word_tokenize(query)
-    query = WordCleaner.remove_stop_words(query)
-    query = WordCleaner.lemmatize(query)
-    vectorizer, dataset_keys, tfidf_matrix = FileManager.load_model_from_drive(
-        "../" + dataset_name
+def get_row_by_id(table_name, id):
+    # Establish a database connection
+    db_connection = mysql.connector.connect(
+        host="localhost", user="python", database="ir"
     )
-    matrix = Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer)
-    similar_rows = Matcher.get_query_answers(tfidf_matrix, matrix, dataset_keys, 0.35)
-    return similar_rows
+
+    # Create a new cursor
+    cursor = db_connection.cursor()
+
+    # Execute the query
+    query = f"SELECT * FROM {table_name} WHERE id = %s"
+    cursor.execute(query, (id,))
+
+    # Fetch the result
+    row = cursor.fetchone()
+
+    # Close the cursor and connection
+    cursor.close()
+    db_connection.close()
+
+    return row
 
 
-def load_dataset(dataset_name: str):
+def getTopic(text):
 
-    return FileManager.csv_to_dict("..\wikir\csv\wikir.csv")
+    dictionary = corpora.Dictionary([word] for word in word_tokenize(text))
+    corpus = [dictionary.doc2bow([word]) for word in word_tokenize(text)]
+    ldamodel = models.LdaModel(corpus, num_topics=1, id2word=dictionary)
+    return ldamodel.print_topics(num_topics=1, num_words=5)[0][1]

@@ -8,6 +8,15 @@ import string
 import roman
 import re
 from number_parser import parse_ordinal
+from nltk.tokenize import word_tokenize
+
+
+def query_cleaning(query: str):
+    query = word_tokenize(query)
+    query = remove_stop_words(query)
+    query = [get_unified_synonym_2(word) for word in query]
+    query = lemmatize(query)
+    return query
 
 
 def stem(words, mode):
@@ -51,6 +60,7 @@ def remove_stop_words(words):
 
     return filtered_text
 
+
 def remove_single_letters(words):
     processed_words = []
     for word in words:
@@ -70,6 +80,8 @@ def process_capital_punctuation(words):
 
 # Create a dictionary to store precomputed results
 memo = {}
+
+
 def get_unified_synonym_2(word):
     # Check if the result is already in the dictionary
     if word in memo:
@@ -77,50 +89,85 @@ def get_unified_synonym_2(word):
 
     if word.isdigit():
         result = str(word)
-    
+
     # Convert Roman numeral to integers
     elif is_roman_numeral(word):
         result = str(roman.fromRoman(word.upper()))
-    
+
     # Convert ordianl words like "first" to "1st"
     elif is_ordinal(word):
         result = ordinal_word_to_ordinal_number(word.lower())
 
     else:
-    # If the word is a numeric word, return it as a number
+        # If the word is a numeric word, return it as a number
         try:
             result = str(w2n.word_to_num(word))
-        except ValueError:    
+        except ValueError:
             result = word.lower()
-    
+
     result = standardize_country_names(result)
     # Store the result in the dictionary
     memo[word] = result
     return result
 
 
-
 # This pattern matches Roman numerals from 1 to 49
-pattern = '(I|II|III|IV|V|VI|VII|VIII|IX|X|XX|XXX|XL|L)?'
+pattern = "(I|II|III|IV|V|VI|VII|VIII|IX|X|XX|XXX|XL|L)?"
+
+
 def is_roman_numeral(s):
     return bool(re.fullmatch(pattern, s, re.IGNORECASE))
 
 
-ordinal_words = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth', 'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth', 'twentieth', 'thirtieth', 'fortieth', 'fiftieth', 'sixtieth', 'seventieth', 'eightieth', 'ninetieth', 'hundredth', 'thousandth']
+ordinal_words = [
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth",
+    "seventh",
+    "eighth",
+    "ninth",
+    "tenth",
+    "eleventh",
+    "twelfth",
+    "thirteenth",
+    "fourteenth",
+    "fifteenth",
+    "sixteenth",
+    "seventeenth",
+    "eighteenth",
+    "nineteenth",
+    "twentieth",
+    "thirtieth",
+    "fortieth",
+    "fiftieth",
+    "sixtieth",
+    "seventieth",
+    "eightieth",
+    "ninetieth",
+    "hundredth",
+    "thousandth",
+]
+
+
 def is_ordinal(word):
     # Check if the word ends with an ordinal suffix
-    if re.fullmatch(r'.*(st|nd|rd|th)$', word, re.IGNORECASE):
+    if re.fullmatch(r".*(st|nd|rd|th)$", word, re.IGNORECASE):
         # If it does, check if it's an ordinal word
-        if(word in ordinal_words):
+        if word in ordinal_words:
             return True
     return False
 
 
 def ordinal_word_to_ordinal_number(word):
     number = parse_ordinal(word)
-    suffix = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][(number % 10 if number % 100 not in [11, 12, 13] else 0)]
+    suffix = ["th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th"][
+        (number % 10 if number % 100 not in [11, 12, 13] else 0)
+    ]
     return str(number) + suffix
- 
+
 
 def standardize_country_names(name):
     # If the name is in the dictionary, return the standardized form
@@ -130,53 +177,53 @@ def standardize_country_names(name):
 
 
 country_dict = {
-    'usa': 'united states',
-    'u.s.': 'united states',
-    'u.s.a.': 'united states',
-    'u.k.': 'united kingdom',
-    'uk': 'united kingdom',
-    'prc': "china",
-    'uae': 'united arab emirates',
-    'u.a.e.': 'united arab emirates',
-    'eu': 'european union',
-    'nippon': 'japan',
-    'nihon': 'japan',
-    'deutschland': 'germany',
-    'españa': 'spain',
-    'dprk': 'north korea',
-    'hellas': 'greece',
-    'hellenic': 'greece',
-    'mzansi': 'south africa',
-    'rossiya': 'russia',
-    'aotearoa': 'new zealand',
-    'singapura': 'singapore',
-    'bharat': 'india',
-    'ksa': 'saudi arabia',
-    'malaya': 'malaysia',
-    'turkiye': 'turkey',
-    'italia': 'italy',
-    'pilipinas': 'philippines',
-    'brasil': 'brazil',
-    'polska': 'poland',
-    'cesko': 'czechia',
-    'suomi': 'finland',
-    'danmark': 'denmark',
-    'eire': 'ireland',
-    'kypros': 'cyprus',
-    'kyrgyz': 'kyrgyzstan',
-    'eesti': 'estonia',
-    'lietuva': 'lithuania',
-    'slovensko': 'slovakia',
-    'magyarorszag': 'hungary',
-    'hrvatska': 'croatia',
-    'slovenija': 'slovenia',
-    'srbija': 'serbia',
-    'shqiperia': 'albania',
-    'aussie': 'australia',
-    'malay': 'malaysia',
-    'nyc': 'new york city',
-    'joburg': 'johannesburg',
-    'capetown': 'cape town',
-    'philly': 'philadelphia',
-    'hongkong': 'hong kong',
+    "usa": "united states",
+    "u.s.": "united states",
+    "u.s.a.": "united states",
+    "u.k.": "united kingdom",
+    "uk": "united kingdom",
+    "prc": "china",
+    "uae": "united arab emirates",
+    "u.a.e.": "united arab emirates",
+    "eu": "european union",
+    "nippon": "japan",
+    "nihon": "japan",
+    "deutschland": "germany",
+    "españa": "spain",
+    "dprk": "north korea",
+    "hellas": "greece",
+    "hellenic": "greece",
+    "mzansi": "south africa",
+    "rossiya": "russia",
+    "aotearoa": "new zealand",
+    "singapura": "singapore",
+    "bharat": "india",
+    "ksa": "saudi arabia",
+    "malaya": "malaysia",
+    "turkiye": "turkey",
+    "italia": "italy",
+    "pilipinas": "philippines",
+    "brasil": "brazil",
+    "polska": "poland",
+    "cesko": "czechia",
+    "suomi": "finland",
+    "danmark": "denmark",
+    "eire": "ireland",
+    "kypros": "cyprus",
+    "kyrgyz": "kyrgyzstan",
+    "eesti": "estonia",
+    "lietuva": "lithuania",
+    "slovensko": "slovakia",
+    "magyarorszag": "hungary",
+    "hrvatska": "croatia",
+    "slovenija": "slovenia",
+    "srbija": "serbia",
+    "shqiperia": "albania",
+    "aussie": "australia",
+    "malay": "malaysia",
+    "nyc": "new york city",
+    "joburg": "johannesburg",
+    "capetown": "cape town",
+    "philly": "philadelphia",
+    "hongkong": "hong kong",
 }
