@@ -57,7 +57,7 @@ def write_runfile_to_file(path, queries, queries_answers, max_relevance=2):
 def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys, matrix):
     pickle_model(name, vectorizer)
     store_keys(name, keys)
-    store_matrix(name, matrix)
+    store_sparse_matrix(name, matrix)
     return
 
 
@@ -117,7 +117,7 @@ def store_matrix(name: str, matrix: np.array):
 
 def load_matrix(name: str):
     path = name + ".npy"
-    return np.load(path)
+    return np.load(path,allow_pickle=True)
 
 
 def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
