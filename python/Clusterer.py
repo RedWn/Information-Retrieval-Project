@@ -53,8 +53,8 @@ class Clusterer:
                 vocab = [word for word in doc]
             x = " ".join(vocab)
             wordcloud = WordCloud(
-                width=800,
-                height=800,
+                width=700,
+                height=700,
                 background_color="white",
                 stopwords=None,
                 min_font_size=10,
@@ -62,6 +62,6 @@ class Clusterer:
 
             axs[int(i / 3), i % 3].imshow(wordcloud)
             plt.axis("off")
-            plt.tight_layout(pad=0)
+            # plt.tight_layout(pad=0)
         plt.show()
         return topics_dict
