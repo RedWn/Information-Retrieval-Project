@@ -6,6 +6,8 @@ from sklearn.decomposition import TruncatedSVD
 import pandas as pd
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+import re
+from wordcloud import WordCloud
 
 
 class Clusterer:
@@ -16,7 +18,7 @@ class Clusterer:
         self.model = KMeans(n_clusters=nClusters).fit(self.lsa_matrix)
         self.topics_dict = {}
 
-    def plot(self, size, topics) -> dict:
+    def plot(self, size) -> dict:
         pca = PCA(3)
         pca.fit(self.lsa_matrix)
         pca_matrix = pca.transform(self.lsa_matrix)
@@ -30,27 +32,33 @@ class Clusterer:
             s=20,
             edgecolor="none",
         )
-        # produce a legend with the unique colors from the scatter
         legend1 = ax.legend(
-            *scatter.legend_elements(), loc="lower left", title="Topics"
+            *scatter.legend_elements(), loc="lower left", title="Classes"
         )
         ax.add_artist(legend1)
-        for t, l in zip(
-            legend1.texts,
-            list(topics.values()),
-        ):
-            t.set_text(l)
         plt.show()
 
     def getTopics(self, dataset, keys) -> dict:
         topics_dict = {}
-        for i in tqdm(range(0, len(self.svd.components_))):
+        fig, axs = plt.subplots(2, int(self.nClusters / 2))
+        fig.set_figwidth(21 * 3)
+        fig.set_figheight(21)
+        for i in tqdm(range(0, self.nClusters)):
             indices = np.where(self.model.labels_ == i)[0]
             text = [dataset[keys[x]] for x in indices]
             for doc in text:
-                vocab = [[word] for word in doc]
-            dictionary = corpora.Dictionary(word for word in vocab)
-            corpus = [dictionary.doc2bow(word) for word in vocab]
-            ldamodel = models.LdaModel(corpus, num_topics=1, id2word=dictionary)
-            topics_dict[i] = ldamodel.print_topics(num_topics=1, num_words=5)[0][1]
+                vocab = [word for word in doc]
+            x = " ".join(vocab)
+            wordcloud = WordCloud(
+                width=800,
+                height=800,
+                background_color="white",
+                stopwords=None,
+                min_font_size=10,
+            ).generate(x)
+
+            axs[int(i / 3), i % 3].imshow(wordcloud)
+            plt.axis("off")
+            plt.tight_layout(pad=0)
+        plt.show()
         return topics_dict
