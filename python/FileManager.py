@@ -54,21 +54,26 @@ def write_runfile_to_file(path, queries, queries_answers, max_relevance=2):
     return
 
 
-def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys, matrix):
+def write_model_to_drive(
+    name,
+    vectorizer: TfidfVectorizer,
+    keys,
+    sparse_matrix,
+    matrix,
+):
     pickle_model(name, vectorizer)
     store_keys(name, keys)
+    store_sparse_matrix(name, matrix)
     store_matrix(name, matrix)
     return
 
 
-def load_model_from_drive(name: str, type: int) -> sparse:
+def load_model_from_drive(name: str) -> sparse:
     vectorizer = unpickle_model(name)
     keys = load_keys(name)
-    if type == 0:
-        matrix = load_sparse_matrix(name)
-    else:
-        matrix = load_matrix(name)
-    return vectorizer, keys, matrix
+    sparse_matrix = load_sparse_matrix(name)
+    matrix = load_matrix(name)
+    return vectorizer, keys, sparse_matrix, matrix
 
 
 def pickle_model(name: str, vectorizer: TfidfVectorizer):
