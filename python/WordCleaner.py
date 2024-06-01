@@ -7,6 +7,7 @@ from word2number import w2n
 import string
 import roman
 import re
+import spacy
 from number_parser import parse_ordinal
 from nltk.tokenize import word_tokenize
 
@@ -18,6 +19,7 @@ def query_cleaning(query: str):
     query = lemmatize(query)
     return query
 
+nlp = spacy.load("en_core_web_sm")
 
 def stem(words, mode):
     stemmer = ns.PorterStemmer()
@@ -52,12 +54,16 @@ def lemmatize(words):
     return lemmatized_words
 
 
-def remove_stop_words(words):
+def remove_stop_words(words, mode = "nltk"):
     filtered_text = []
-    for word in words:
-        if word not in stopwords.words("English"):
-            filtered_text.append(word)
-
+    if mode == "nltk":
+        for word in words:
+            if word not in stopwords.words("English"):
+                filtered_text.append(word)
+    elif mode == "spacy":
+        for word in words:
+            if not nlp.vocab[word].is_stop:
+                filtered_text.append(word)
     return filtered_text
 
 
@@ -92,11 +98,11 @@ def get_unified_synonym_2(word):
 
     # Convert Roman numeral to integers
     elif is_roman_numeral(word):
-        result = str(roman.fromRoman(word.upper()))
+        result = str(roman.fromRoman(word.upper())).lower()
 
     # Convert ordianl words like "first" to "1st"
     elif is_ordinal(word):
-        result = ordinal_word_to_ordinal_number(word.lower())
+        result = ordinal_word_to_ordinal_number(word.lower()).lower()
 
     else:
         # If the word is a numeric word, return it as a number
@@ -117,40 +123,6 @@ pattern = "(I|II|III|IV|V|VI|VII|VIII|IX|X|XX|XXX|XL|L)?"
 
 def is_roman_numeral(s):
     return bool(re.fullmatch(pattern, s, re.IGNORECASE))
-
-
-ordinal_words = [
-    "first",
-    "second",
-    "third",
-    "fourth",
-    "fifth",
-    "sixth",
-    "seventh",
-    "eighth",
-    "ninth",
-    "tenth",
-    "eleventh",
-    "twelfth",
-    "thirteenth",
-    "fourteenth",
-    "fifteenth",
-    "sixteenth",
-    "seventeenth",
-    "eighteenth",
-    "nineteenth",
-    "twentieth",
-    "thirtieth",
-    "fortieth",
-    "fiftieth",
-    "sixtieth",
-    "seventieth",
-    "eightieth",
-    "ninetieth",
-    "hundredth",
-    "thousandth",
-]
-
 
 def is_ordinal(word):
     # Check if the word ends with an ordinal suffix
@@ -227,3 +199,35 @@ country_dict = {
     "philly": "philadelphia",
     "hongkong": "hong kong",
 }
+
+ordinal_words = [
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth",
+    "seventh",
+    "eighth",
+    "ninth",
+    "tenth",
+    "eleventh",
+    "twelfth",
+    "thirteenth",
+    "fourteenth",
+    "fifteenth",
+    "sixteenth",
+    "seventeenth",
+    "eighteenth",
+    "nineteenth",
+    "twentieth",
+    "thirtieth",
+    "fortieth",
+    "fiftieth",
+    "sixtieth",
+    "seventieth",
+    "eightieth",
+    "ninetieth",
+    "hundredth",
+    "thousandth",
+]
