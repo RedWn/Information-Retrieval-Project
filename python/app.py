@@ -5,6 +5,7 @@ import Matcher
 import WordCleaner
 import Indexer
 from nltk.tokenize import word_tokenize
+from sentence_transformers import SentenceTransformer
 
 
 if "visibility" not in st.session_state:
@@ -27,6 +28,7 @@ if dataset:
         )
     else:
         type = 1
+        model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
         vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
             "model/lotte", type
         )
@@ -37,7 +39,6 @@ text_input = st.text_input(
     label_visibility=st.session_state.visibility,
     disabled=st.session_state.disabled,
 )
-# "she co founded the phillips collection with her husband duncan phillips she was born marjorie acker in bourbon indiana she was the sister to six other siblings her parents were charles ernest acker and alice beal she was raised in ossining new york phillips started drawing as a child her uncles were reynolds beal and gifford beal both men noticed phillips artistic ability and suggested she pursue art as a career path she began attending the art students league in 1915 and graduated in 1918 she studied under boardman robinson marjorie phillips has the unmistakable style of the born painter duncan phillips phillips is quoted as stating that she didn t want to paint depressing pictures she painted primarily landscapes and still life works despite living a socialite lifestyle alongside her husband phillips made the effort to paint every morning in her washington d c studio she attended an art exhibition for duncan phillips at the century association in january 1921 she met duncan and the two married in october of that year duncan was an art collector and the couple expanded their collecting phillips moved to washington d c and into duncan s dupont circle mansion duncan s mother",
 
 if text_input:
     query = WordCleaner.query_cleaning(text_input)
@@ -46,14 +47,14 @@ if text_input:
             matrix,
             Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer),
             dataset_keys,
-            0.5,
+            0.35,
         )
     else:
         answers = Matcher.get_query_answers(
             matrix,
-            Indexer.calculate_doc_embedding(" ".join(query)),
+            Indexer.calculate_doc_embedding(" ".join(query), model),
             dataset_keys,
-            0.5,
+            0.35,
         )
     st.write("You entered: ", text_input)
     col1, col2 = st.columns([4, 1])
