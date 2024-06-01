@@ -21,17 +21,27 @@ dataset = st.selectbox(
 )
 
 if dataset:
+    text_input = ""
     if dataset == "wikir":
-        type = 0
-        vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
-            "model/wikir", type
+        vectorizer, dataset_keys, sparse_matrix, matrix = (
+            FileManager.load_model_from_drive("model/wikir")
         )
     else:
-        type = 1
         model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-        vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
-            "model/lotte", type
+        vectorizer, dataset_keys, sparse_matrix, matrix = (
+            FileManager.load_model_from_drive("model/lotte")
         )
+
+mode = st.selectbox(
+    "Indexing Method",
+    ["tf-idf", "embedding"],
+    help="choose whether to use TF-IDF or Embedding",
+    disabled=st.session_state.disabled,
+    label_visibility=st.session_state.visibility,
+)
+
+if mode:
+    text_input = ""
 
 
 text_input = st.text_input(
@@ -42,9 +52,9 @@ text_input = st.text_input(
 
 if text_input:
     query = WordCleaner.query_cleaning(text_input)
-    if type == 0:
+    if mode == "tf-idf":
         answers = Matcher.get_query_answers(
-            matrix,
+            sparse_matrix,
             Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer),
             dataset_keys,
             0.35,
@@ -54,7 +64,7 @@ if text_input:
             matrix,
             Indexer.calculate_doc_embedding(" ".join(query), model),
             dataset_keys,
-            0.35,
+            0.55,
         )
     st.write("You entered: ", text_input)
     col1, col2 = st.columns([4, 1])

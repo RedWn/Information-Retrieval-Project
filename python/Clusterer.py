@@ -40,7 +40,10 @@ class Clusterer:
 
     def getTopics(self, dataset, keys) -> dict:
         topics_dict = {}
-        fig, axs = plt.subplots(2, int(self.nClusters / 2))
+        if self.nClusters > 6:
+            fig, axs = plt.subplots(3, 4)
+        else:
+            fig, axs = plt.subplots(2, 3)
         fig.set_figwidth(21 * 3)
         fig.set_figheight(21)
         for i in tqdm(range(0, self.nClusters)):
