@@ -20,9 +20,16 @@ dataset = st.selectbox(
 )
 
 if dataset:
-    vectorizer, dataset_keys, tfidf_matrix = FileManager.load_model_from_drive(
-        "wikir_RML"
-    )  # TODO make this dataset
+    if dataset == "wikir":
+        type = 0
+        vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
+            "wikir", type
+        )
+    else:
+        type = 1
+        vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
+            "lotte", type
+        )
 
 
 text_input = st.text_input(
@@ -34,12 +41,20 @@ text_input = st.text_input(
 
 if text_input:
     query = WordCleaner.query_cleaning(text_input)
-    answers = Matcher.get_query_answers(
-        tfidf_matrix,
-        Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer),
-        dataset_keys,
-        0.35,
-    )
+    if type == 0:
+        answers = Matcher.get_query_answers(
+            matrix,
+            Indexer.calculate_doc_tf_idf([" ".join(query)], vectorizer),
+            dataset_keys,
+            0.5,
+        )
+    else:
+        answers = Matcher.get_query_answers(
+            matrix,
+            Indexer.calculate_doc_embedding(" ".join(query)),
+            dataset_keys,
+            0.5,
+        )
     st.write("You entered: ", text_input)
     col1, col2 = st.columns([4, 1])
     for answer in answers:

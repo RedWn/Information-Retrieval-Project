@@ -2,6 +2,7 @@ import csv
 import pickle
 import json
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from scipy import sparse
@@ -16,7 +17,7 @@ def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
     return writer, csvfile
 
 
-def csv_to_dict(filename, delimiter = ',', skip_headers = True):
+def csv_to_dict(filename, delimiter=",", skip_headers=True):
     with open(filename, mode="r") as infile:
         reader = csv.reader(infile, delimiter=delimiter)
         if skip_headers:
@@ -60,10 +61,13 @@ def write_model_to_drive(name, vectorizer: TfidfVectorizer, keys, matrix):
     return
 
 
-def load_model_from_drive(name) -> sparse:
+def load_model_from_drive(name: str, type: int) -> sparse:
     vectorizer = unpickle_model(name)
     keys = load_keys(name)
-    matrix = load_matrix(name)
+    if type == 0:
+        matrix = load_sparse_matrix(name)
+    else:
+        matrix = load_matrix(name)
     return vectorizer, keys, matrix
 
 
@@ -94,15 +98,26 @@ def load_keys(name: str) -> list[str]:
     return keys
 
 
-def store_matrix(name: str, matrix: sparse):
+def store_sparse_matrix(name: str, matrix: sparse):
     path = name + ".matrix"
     sparse.save_npz(path, matrix)
     return
 
 
-def load_matrix(name: str):
+def load_sparse_matrix(name: str):
     path = name + ".matrix.npz"
     return sparse.load_npz(path)
+
+
+def store_matrix(name: str, matrix: np.array):
+    path = name + ".npy"
+    np.save(path, matrix)
+    return
+
+
+def load_matrix(name: str):
+    path = name + ".npy"
+    return np.load(path)
 
 
 def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
