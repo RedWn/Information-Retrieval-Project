@@ -23,12 +23,12 @@ if dataset:
     if dataset == "wikir":
         type = 0
         vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
-            "wikir", type
+            "model/wikir", type
         )
     else:
         type = 1
         vectorizer, dataset_keys, matrix = FileManager.load_model_from_drive(
-            "lotte", type
+            "model/lotte", type
         )
 
 

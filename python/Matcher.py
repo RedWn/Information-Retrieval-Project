@@ -4,7 +4,7 @@ import numpy as np
 from scipy import sparse
 
 
-def get_query_answers(corpus_matrix, query_matrix, keys, threshold=0.25):
+def get_query_answers(corpus_matrix, query_matrix, keys, threshold=0.5):
     similarity_matrix = cosine_similarity(corpus_matrix, query_matrix).reshape(-1)
     similar_rows_indices = np.where(similarity_matrix > threshold)[0]
 
