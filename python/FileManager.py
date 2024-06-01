@@ -16,10 +16,11 @@ def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
     return writer, csvfile
 
 
-def csv_to_dict(filename, delimiter=","):
+def csv_to_dict(filename, delimiter = ',', skip_headers = True):
     with open(filename, mode="r") as infile:
         reader = csv.reader(infile, delimiter=delimiter)
-        next(reader, None)  # skip the headers
+        if skip_headers:
+            next(reader, None)  # skip the headers
         dict_from_csv = {rows[0]: word_tokenize(rows[1]) for rows in tqdm(reader)}
     return dict_from_csv
 
