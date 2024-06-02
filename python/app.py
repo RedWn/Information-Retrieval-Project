@@ -16,8 +16,8 @@ if "visibility" not in st.session_state:
 if "dataset" not in st.session_state:
     st.session_state["dataset"] = "wikir"
 if "model" not in st.session_state:
-    (st.session_state["model"],) = FileManager.load_word2vec_model(
-        "model/embedding_8_epoch_20.model", "model/embedding_8_docs_vecs.npy"
+    st.session_state["model"] = FileManager.load_word2vec_model(
+        "model/embedding_8_epoch_20.model"
     )
 if "query" not in st.session_state:
     st.session_state["query"] = ""
@@ -51,8 +51,8 @@ def select_dataset():
         )
     else:
         model_string = "model/wikir"
-        (st.session_state["model"],) = FileManager.load_word2vec_model(
-            "model/embedding_8_epoch_20.model", "model/embedding_8_docs_vecs.npy"
+        st.session_state["model"] = FileManager.load_word2vec_model(
+            "model/embedding_8_epoch_20.model"
         )
     (
         st.session_state["vectorizer"],
