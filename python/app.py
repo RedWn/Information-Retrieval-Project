@@ -4,12 +4,12 @@ import FileManager
 import Matcher
 import WordCleaner
 import Indexer
+import Personalizer
+import pandas as pd
 from nltk.tokenize import word_tokenize
 from sentence_transformers import SentenceTransformer
 
-import random
-
-
+st.set_page_config(layout="wide")
 if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
@@ -22,6 +22,7 @@ if "model" not in st.session_state:
     )
 if "query" not in st.session_state:
     st.session_state["query"] = ""
+    st.session_state["searched"] = False
 if (
     "vectorizer" not in st.session_state
     and "dataset_keys" not in st.session_state
@@ -34,6 +35,9 @@ if (
         st.session_state["sparse_matrix"],
         st.session_state["matrix"],
     ) = FileManager.load_model_from_drive("model/wikir")
+if "history_table" not in st.session_state:
+    st.session_state["history_table"] = pd.DataFrame(columns=["Previous Queries"])
+    st.session_state["personalization"] = False
 
 
 def select_dataset():
@@ -60,14 +64,22 @@ def select_mode():
     st.session_state["query"] = None
 
 
-col1, col2 = st.columns(2)
+def search():
+    st.session_state.searched = True
 
-with col1:
+
+def clear_history():
+    Personalizer.clear_history()
+    st.session_state["history_table"] = pd.DataFrame(columns=["Previous Queries"])
+
+
+col1, col2 = st.columns([0.25, 0.75])
+
+with col2:
     st.session_state["dataset"] = st.selectbox(
         "Dataset",
         ["wikir", "lotte"],
         help="Choose the dataset to search",
-        disabled=st.session_state.disabled,
         label_visibility=st.session_state.visibility,
         on_change=select_dataset,
     )
@@ -76,7 +88,6 @@ with col1:
         "Indexing Method",
         ["tf-idf", "embedding"],
         help="choose whether to use TF-IDF or Embedding",
-        disabled=st.session_state.disabled,
         label_visibility=st.session_state.visibility,
         on_change=select_mode,
     )
@@ -84,10 +95,10 @@ with col1:
     st.session_state["query"] = st.text_input(
         "Enter your query:",
         label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled,
+        on_change=search,
     )
 
-    if st.session_state["query"]:
+    if st.session_state.searched and st.session_state["query"]:
         query = WordCleaner.query_cleaning(st.session_state["query"])
         if st.session_state["mode"] == "tf-idf":
             answers = Matcher.get_query_answers(
@@ -118,6 +129,9 @@ with col1:
                     0.35,
                 )
         st.write("You entered: ", st.session_state["query"])
+        st.session_state["history_table"].loc[
+            st.session_state["history_table"].size
+        ] = st.session_state["query"]
         subcol1, subcol2 = st.columns([4, 1])
         if len(list(answers.keys())) > 0:
             text = Interface.get_rows_by_ids(
@@ -128,10 +142,17 @@ with col1:
             subcol1.container.header(" ".join(word_tokenize(text[i][1])[0:3]))
             subcol1.container.write(text[i][1])
             subcol1.container.caption(":orange[ Result ID #{}]".format(answer))
+        st.session_state.searched = False
 
-with col2:
-    st.radio(
-        "Set selectbox label visibility 👉",
-        key="visibility",
-        options=["visible", "hidden", "collapsed"],
+
+with col1:
+    st.checkbox("Enable Personalization", key="personalization")
+    st.table(
+        st.session_state["history_table"],
+    )
+
+    st.button(
+        "Clear History",
+        on_click=clear_history,
+        disabled=not st.session_state.personalization,
     )
