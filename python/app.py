@@ -103,6 +103,7 @@ with col2:
         on_change=search,
     )
 
+    st.write(st.session_state.searched)
     if st.session_state.searched and st.session_state["query"]:
         query = WordCleaner.query_cleaning(st.session_state["query"])
         if st.session_state["mode"] == "tf-idf":
@@ -113,22 +114,32 @@ with col2:
                 0.35,
             )
         else:
-            if st.session_state["query"] == "wikir":
-                answers = Matcher.get_query_answers(
-                    st.session_state["matrix"],
-                    st.session_state["indexer"].calculate_doc_vector(" ".join(query)),
-                    st.session_state["dataset_keys"],
-                    0.35,
-                )
-            else:
-                answers = Matcher.get_query_answers(
-                    st.session_state["matrix"],
-                    st.session_state["indexer"].calculate_doc_embedding(
-                        " ".join(query)
-                    ),
-                    st.session_state["dataset_keys"],
-                    0.35,
-                )
+            answers = Personalizer.get_query_answers_personalized(
+                st.session_state["matrix"],
+                query,
+                st.session_state["dataset_keys"],
+                st.session_state["model"],
+                0.5,
+                st.session_state["dataset"],
+                st.session_state.personalization,
+            )
+        st.write(answers)
+        # if st.session_state["query"] == "wikir":
+        #     answers = Matcher.get_query_answers(
+        #         st.session_state["matrix"],
+        #         st.session_state["indexer"].calculate_doc_vector(" ".join(query)),
+        #         st.session_state["dataset_keys"],
+        #         0.35,
+        #     )
+        # else:
+        #     answers = Matcher.get_query_answers(
+        #         st.session_state["matrix"],
+        #         st.session_state["indexer"].calculate_doc_embedding(
+        #             " ".join(query)
+        #         ),
+        #         st.session_state["dataset_keys"],
+        #         0.35,
+        #     )
         st.write("You entered: ", st.session_state["query"])
         st.session_state["history_table"].loc[
             st.session_state["history_table"].size
