@@ -8,7 +8,7 @@ from nltk.tokenize import word_tokenize
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models import Word2Vec
-
+import mysql.connector
 
 
 def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
@@ -124,7 +124,7 @@ def store_matrix(name: str, matrix: np.array):
 
 def load_matrix(name: str):
     path = name + ".npy"
-    return np.load(path,allow_pickle=True)
+    return np.load(path, allow_pickle=True)
 
 
 def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
@@ -153,6 +153,33 @@ def load_word2vec_model(model_path, npy_path):
     documents_vectors = np.load(npy_path)
     return model, documents_vectors
 
+
 def save_word2vec_model(model, model_path, documents_vectors, npy_path):
     model.save(model_path)
     np.save(npy_path, documents_vectors)
+
+
+def get_rows_by_ids(table_name, ids):
+    # Establish a database connection
+    db_connection = mysql.connector.connect(
+        host="localhost", user="python", database="ir"
+    )
+
+    # Create a new cursor
+    cursor = db_connection.cursor()
+
+    # Prepare the format string for the query
+    format_strings = ",".join(["%s"] * len(ids))
+
+    # Execute the query
+    query = f"SELECT * FROM {table_name} WHERE id IN ({format_strings})"
+    cursor.execute(query, tuple(ids))
+
+    # Fetch all the results
+    rows = cursor.fetchall()
+
+    # Close the cursor and connection
+    cursor.close()
+    db_connection.close()
+
+    return rows
