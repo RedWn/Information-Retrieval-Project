@@ -8,7 +8,7 @@ import mysql.connector
 from gensim import corpora, models
 
 
-def get_row_by_id(table_name, id):
+def get_rows_by_ids(table_name, ids):
     # Establish a database connection
     db_connection = mysql.connector.connect(
         host="localhost", user="python", database="ir"
@@ -17,18 +17,21 @@ def get_row_by_id(table_name, id):
     # Create a new cursor
     cursor = db_connection.cursor()
 
-    # Execute the query
-    query = f"SELECT * FROM {table_name} WHERE id = %s"
-    cursor.execute(query, (id,))
+    # Prepare the format string for the query
+    format_strings = ",".join(["%s"] * len(ids))
 
-    # Fetch the result
-    row = cursor.fetchone()
+    # Execute the query
+    query = f"SELECT * FROM {table_name} WHERE id IN ({format_strings})"
+    cursor.execute(query, tuple(ids))
+
+    # Fetch all the results
+    rows = cursor.fetchall()
 
     # Close the cursor and connection
     cursor.close()
     db_connection.close()
 
-    return row
+    return rows
 
 
 def getTopic(text):
