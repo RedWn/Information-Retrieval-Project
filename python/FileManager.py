@@ -70,7 +70,7 @@ def write_model_to_drive(
     return
 
 
-def load_model_from_drive(name: str) -> sparse:
+def load_model_from_drive(name: str):
     vectorizer = unpickle_model(name)
     keys = load_keys(name)
     sparse_matrix = load_sparse_matrix(name)
