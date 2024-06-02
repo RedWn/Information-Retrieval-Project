@@ -129,9 +129,7 @@ def get_query_answers_personalized(
 ):
     if dataset_name == "wikir":
         query_vector_list = [model.wv[word] for word in query if word in model.wv]
-        country_vector_list = [
-            model.wv[word] for word in country_city if word in model.wv
-        ]
+
         if query_vector_list:
             query_vector = np.mean(query_vector_list, axis=0).reshape(1, -1)
         else:
@@ -147,6 +145,9 @@ def get_query_answers_personalized(
         country_city = get_country_name()
 
         if dataset_name == "wikir":
+            country_vector_list = [
+                model.wv[word] for word in country_city if word in model.wv
+            ]
             if country_vector_list:
                 country_vector = np.mean(country_vector_list, axis=0).reshape(1, -1)
         else:
