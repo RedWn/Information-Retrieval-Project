@@ -16,8 +16,8 @@ if "visibility" not in st.session_state:
 if "dataset" not in st.session_state:
     st.session_state["dataset"] = "wikir"
 if "model" not in st.session_state:
-    st.session_state["model"] = SentenceTransformer(
-        "sentence-transformers/all-MiniLM-L6-v2"
+    (st.session_state["model"],) = FileManager.load_word2vec_model(
+        "embedding_8_epoch_20.model", "embedding_8_docs_vecs.npy"
     )
 if "query" not in st.session_state:
     st.session_state["query"] = ""
