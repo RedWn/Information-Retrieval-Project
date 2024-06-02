@@ -7,6 +7,8 @@ from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from scipy import sparse
 from sklearn.feature_extraction.text import TfidfVectorizer
+from gensim.models import Word2Vec
+
 
 
 def open_csv_writer(path_to_file, fieldnames, delimiter=",", headers=True):
@@ -144,3 +146,13 @@ def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
         print(f"Conversion completed. TSV file saved at {tsv_file_path}")
     except Exception as e:
         print(f"Error converting JSONL to TSV: {e}")
+
+
+def load_word2vec_model(model_path, npy_path):
+    model = Word2Vec.load(model_path)
+    documents_vectors = np.load(npy_path)
+    return model, documents_vectors
+
+def save_word2vec_model(model, model_path, documents_vectors, npy_path):
+    model.save(model_path)
+    np.save(npy_path, documents_vectors)
