@@ -3,6 +3,7 @@ import platform
 import geocoder
 from python import WordCleaner
 from python import Matcher
+from python import Indexer
 
 history_vectors = []
 history_queries = []
@@ -21,6 +22,13 @@ def get_country_name():
 def get_user_os():
     os = str(platform.system())
     return os.split()
+
+def os_vector(model):
+    os_list = get_user_os()
+    os_vector_list = [model.wv[word] for word in os_list if word in model.wv]
+    if os_vector_list:
+        os_vector = np.mean(os_vector_list, axis=0).reshape(1, -1)
+    return os_vector
 
 def clear_history():
     history_vectors = []
@@ -63,7 +71,7 @@ def get_ans_persona_word_2_vec(query, model, documents_vectors, dataset_keys):
 
         weighted_vector = 0.65 * query_vector + 0.25 * avg_histories_vector + 0.1 * country_vector
 
-        similar_docs = Matcher.get_query_answers(documents_vectors, weighted_vector, dataset_keys, 0.6)
+        similar_docs = Matcher.get_query_answers(documents_vectors, weighted_vector, dataset_keys, 0.55)
         for i, (doc_id, score) in enumerate(list(similar_docs.items())[:10]):
             print(f"Rank {i+1}, Document ID: {doc_id}, Similarity Score: {score}")
         
@@ -74,9 +82,31 @@ def get_ans_persona_word_2_vec(query, model, documents_vectors, dataset_keys):
         print("None of the query words were found in the model's vocabulary.")
 
 
-def os_vector(model):
-    os_list = get_user_os()
-    os_vector_list = [model.wv[word] for word in os_list if word in model.wv]
-    if os_vector_list:
-        os_vector = np.mean(os_vector_list, axis=0).reshape(1, -1)
-    return os_vector
+
+def get_ans_persona_transformers(query, model, documents_vectors, dataset_keys):
+
+    avg_histories_vector = calculate_histories_vector()
+
+    processed_query = WordCleaner.query_cleaning(query)
+
+    embeddingsQ = model.encode(processed_query).reshape(1,-1)
+    
+    if len(history_vectors) == 0:
+        print("no history")
+        avg_histories_vector = embeddingsQ
+    else:
+        print(len(history_vectors), "history queries")
+
+    country_city = get_country_name()
+    print(country_city)
+    country_vector = model.encode(country_city).reshape(1,-1)
+
+    weighted_vector = 0.65 * embeddingsQ + 0.25 * avg_histories_vector + 0.1 * country_vector
+    similar_docs = Matcher.get_query_answers(documents_vectors, weighted_vector, dataset_keys, 0.55)
+    for i, (doc_id, score) in enumerate(list(similar_docs.items())[:10]):
+        print(f"Rank {i+1}, Document ID: {doc_id}, Similarity Score: {score}")
+    
+    print("History queries: ", history_queries)
+    history_vectors.append(weighted_vector)
+    history_queries.append(query)
+
