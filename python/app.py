@@ -52,7 +52,7 @@ def select_dataset():
     else:
         model_string = "model/wikir"
         (st.session_state["model"],) = FileManager.load_word2vec_model(
-            "model/wikir/embedding_8_epoch_20.model"
+            "embedding_8_epoch_20.model", "embedding_8_docs_vecs.npy"
         )
     (
         st.session_state["vectorizer"],
@@ -103,7 +103,6 @@ with col2:
         on_change=search,
     )
 
-    st.write(st.session_state.searched)
     if st.session_state.searched and st.session_state["query"]:
         query = WordCleaner.query_cleaning(st.session_state["query"])
         if st.session_state["mode"] == "tf-idf":
@@ -123,7 +122,6 @@ with col2:
                 st.session_state["dataset"],
                 st.session_state.personalization,
             )
-        st.write(answers)
         # if st.session_state["query"] == "wikir":
         #     answers = Matcher.get_query_answers(
         #         st.session_state["matrix"],
