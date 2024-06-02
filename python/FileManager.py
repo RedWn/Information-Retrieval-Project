@@ -65,7 +65,7 @@ def write_model_to_drive(
 ):
     pickle_model(name, vectorizer)
     store_keys(name, keys)
-    store_sparse_matrix(name, matrix)
+    store_sparse_matrix(name, sparse_matrix)
     store_matrix(name, matrix)
     return
 

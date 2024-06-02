@@ -1,5 +1,4 @@
 import streamlit as st
-import Interface
 import FileManager
 import Matcher
 import WordCleaner
@@ -35,6 +34,9 @@ if (
         st.session_state["sparse_matrix"],
         st.session_state["matrix"],
     ) = FileManager.load_model_from_drive("model/wikir")
+    st.session_state["indexer"] = Indexer.Indexer(
+        st.session_state["vectorizer"], st.session_state["model"]
+    )
 if "history_table" not in st.session_state:
     st.session_state["history_table"] = pd.DataFrame(columns=["Previous Queries"])
     st.session_state["personalization"] = False
@@ -58,6 +60,9 @@ def select_dataset():
         st.session_state["sparse_matrix"],
         st.session_state["matrix"],
     ) = FileManager.load_model_from_drive(model_string)
+    st.session_state["indexer"] = Indexer.Indexer(
+        st.session_state["vectorizer"], st.session_state["model"]
+    )
 
 
 def select_mode():
@@ -103,9 +108,7 @@ with col2:
         if st.session_state["mode"] == "tf-idf":
             answers = Matcher.get_query_answers(
                 st.session_state["sparse_matrix"],
-                Indexer.calculate_doc_tf_idf(
-                    [" ".join(query)], st.session_state["vectorizer"]
-                ),
+                st.session_state["indexer"].calculate_doc_tf_idf([" ".join(query)]),
                 st.session_state["dataset_keys"],
                 0.35,
             )
@@ -113,17 +116,15 @@ with col2:
             if st.session_state["query"] == "wikir":
                 answers = Matcher.get_query_answers(
                     st.session_state["matrix"],
-                    Indexer.calculate_doc_vector(
-                        " ".join(query), st.session_state["model"]
-                    ),
+                    st.session_state["indexer"].calculate_doc_vector(" ".join(query)),
                     st.session_state["dataset_keys"],
                     0.35,
                 )
             else:
                 answers = Matcher.get_query_answers(
                     st.session_state["matrix"],
-                    Indexer.calculate_doc_embedding(
-                        " ".join(query), st.session_state["model"]
+                    st.session_state["indexer"].calculate_doc_embedding(
+                        " ".join(query)
                     ),
                     st.session_state["dataset_keys"],
                     0.35,
@@ -134,7 +135,7 @@ with col2:
         ] = st.session_state["query"]
         subcol1, subcol2 = st.columns([4, 1])
         if len(list(answers.keys())) > 0:
-            text = Interface.get_rows_by_ids(
+            text = FileManager.get_rows_by_ids(
                 st.session_state["dataset"], list(answers.keys())[:10]
             )
         for i, answer in enumerate(list(answers.keys())[:10]):

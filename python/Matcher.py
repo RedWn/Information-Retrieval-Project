@@ -1,6 +1,5 @@
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-import WordCleaner
 
 
 def get_query_answers(corpus_matrix, query_matrix, keys, threshold=0.5):
