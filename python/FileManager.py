@@ -148,10 +148,9 @@ def jsonl_to_tsv(jsonl_file_path: str, tsv_file_path: str) -> None:
         print(f"Error converting JSONL to TSV: {e}")
 
 
-def load_word2vec_model(model_path, npy_path):
+def load_word2vec_model(model_path):
     model = Word2Vec.load(model_path)
-    documents_vectors = np.load(npy_path)
-    return model, documents_vectors
+    return model
 
 
 def save_word2vec_model(model, model_path, documents_vectors, npy_path):
