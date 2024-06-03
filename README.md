@@ -44,7 +44,7 @@ python -m streamlit run app.py
 
 ## Installation
 
-The following packages are used in this project and can be installed using pip:
+The following packages are used in this project and can be installed using pip :
 
 ```bash
 pip install transformers torch==2.2.2 spacy gensim roman re tqdm geocoder sentence-transformers streamlit wordcloud textblob nltk sklearn numpy pandas matplotlib
