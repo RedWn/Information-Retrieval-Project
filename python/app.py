@@ -22,6 +22,7 @@ if "model" not in st.session_state:
     )
 if "query" not in st.session_state:
     st.session_state["query"] = ""
+    st.session_state["text_input"] = ""
     st.session_state["searched"] = False
 if (
     "vectorizer" not in st.session_state
@@ -44,7 +45,7 @@ if "history_table" not in st.session_state:
 
 
 def select_dataset():
-    st.session_state["query"] = None
+    st.session_state["text_input"] = ""
     if st.session_state["dataset"] == "wikir":
         model_string = "model/lotte"
         st.session_state["model"] = SentenceTransformer(
@@ -67,7 +68,7 @@ def select_dataset():
 
 
 def select_mode():
-    st.session_state["query"] = None
+    st.session_state["text_input"] = ""
 
 
 def search():
@@ -102,6 +103,7 @@ with col2:
         "Enter your query:",
         label_visibility=st.session_state.visibility,
         on_change=search,
+        key="text_input",
     )
 
     if st.session_state.searched and st.session_state["query"]:
@@ -122,7 +124,7 @@ with col2:
                 query,
                 st.session_state["dataset_keys"],
                 st.session_state["model"],
-                0.5,
+                0.45,
                 st.session_state["dataset"],
                 st.session_state.personalization,
             )
@@ -151,7 +153,7 @@ with col1:
     )
 
     st.button(
-        "Start a new Chat",
+        "Clear History",
         on_click=clear_history,
         disabled=not st.session_state.personalization,
     )
