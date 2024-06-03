@@ -4,14 +4,14 @@ An information retrieval system that uses advanced natural language processing t
 
 ## Datasets
 
-The datasets used in this project are:
+The datasets used in this project are :
 
 - [Wikir](https://ir-datasets.com/wikir.html#wikir/en1k)
 - [Lotte](https://ir-datasets.com/lotte.html#lotte/science)
 
 ## Project Stages
 
-The project consists of the following stages:
+The project consists of the following stages :
 
 1. **Data Preprocessing**: The data is cleaned by removing stop words, punctuations, and single letters. Synonym mapping is performed to unify different terms with the same meaning. Finally, lemmatization is applied to reduce words to their base or root form.
 
@@ -44,7 +44,7 @@ python -m streamlit run app.py
 
 ## Installation
 
-The following packages are used in this project and can be installed using pip:
+The following packages are used in this project and can be installed using pip :
 
 ```bash
 pip install transformers torch==2.2.2 spacy gensim roman re tqdm geocoder sentence-transformers streamlit wordcloud textblob nltk sklearn numpy pandas matplotlib
