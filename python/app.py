@@ -146,7 +146,7 @@ with col1:
     )
 
     st.button(
-        "Clear History",
+        "Start a new Chat",
         on_click=clear_history,
         disabled=not st.session_state.personalization,
     )
