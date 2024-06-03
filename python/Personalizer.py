@@ -62,7 +62,7 @@ def get_query_answers_personalized(
         else:
             print("None of the query words were found in the model's vocabulary.")
     else:
-        query_vector = model.encode(query).reshape(1, -1)
+        query_vector = model.encode(" ".join(query)).reshape(1, -1)
     country_vector = query_vector
     avg_histories_vector = query_vector
 
