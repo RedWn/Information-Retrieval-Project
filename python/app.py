@@ -122,22 +122,6 @@ with col2:
                 st.session_state["dataset"],
                 st.session_state.personalization,
             )
-        # if st.session_state["query"] == "wikir":
-        #     answers = Matcher.get_query_answers(
-        #         st.session_state["matrix"],
-        #         st.session_state["indexer"].calculate_doc_vector(" ".join(query)),
-        #         st.session_state["dataset_keys"],
-        #         0.35,
-        #     )
-        # else:
-        #     answers = Matcher.get_query_answers(
-        #         st.session_state["matrix"],
-        #         st.session_state["indexer"].calculate_doc_embedding(
-        #             " ".join(query)
-        #         ),
-        #         st.session_state["dataset_keys"],
-        #         0.35,
-        #     )
         st.write("You entered: ", st.session_state["query"])
         st.session_state["history_table"].loc[
             st.session_state["history_table"].size
