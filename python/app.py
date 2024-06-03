@@ -123,9 +123,10 @@ with col2:
                 st.session_state.personalization,
             )
         st.write("You entered: ", st.session_state["query"])
-        st.session_state["history_table"].loc[
-            st.session_state["history_table"].size
-        ] = st.session_state["query"]
+        if st.session_state.personalization:
+            st.session_state["history_table"].loc[
+                st.session_state["history_table"].size
+            ] = st.session_state["query"]
         subcol1, subcol2 = st.columns([4, 1])
         if len(list(answers.keys())) > 0:
             text = FileManager.get_rows_by_ids(
