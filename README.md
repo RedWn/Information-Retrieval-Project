@@ -2,6 +2,10 @@
 
 An information retrieval system that uses advanced natural language processing techniques to retrieve relevant documents from a corpus based on a user's query.
 
+## Sneak peek
+
+<img src="https://github.com/RedWn/Information-Retrieval-Project/blob/main/Search%20engine.png" alt="Search engine" width="650"/>
+
 ## Datasets
 
 The datasets used in this project are:
